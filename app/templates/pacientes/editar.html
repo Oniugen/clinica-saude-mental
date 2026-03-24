@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Paciente - Clínica de Saúde Mental{% endblock %}
+
+{% block content %}
+<h2>Editar Paciente</h2>
+
+<div class="card">
+    <form method="POST">
+        <div class="form-group">
+            <label for="nome">Nome Completo *</label>
+            <input type="text" id="nome" name="nome" value="{{ paciente.nome }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="cpf">CPF *</label>
+            <input type="text" id="cpf" name="cpf" value="{{ paciente.cpf|format_cpf }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="data_nascimento">Data de Nascimento *</label>
+            <input type="date" id="data_nascimento" name="data_nascimento" value="{{ paciente.data_nascimento }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="estado_civil">Estado Civil</label>
+            <select id="estado_civil" name="estado_civil">
+                <option value="">Selecione</option>
+                <option value="Solteiro(a)" {% if paciente.estado_civil == 'Solteiro(a)' %}selected{% endif %}>Solteiro(a)</option>
+                <option value="Casado(a)" {% if paciente.estado_civil == 'Casado(a)' %}selected{% endif %}>Casado(a)</option>
+                <option value="Divorciado(a)" {% if paciente.estado_civil == 'Divorciado(a)' %}selected{% endif %}>Divorciado(a)</option>
+                <option value="Viúvo(a)" {% if paciente.estado_civil == 'Viúvo(a)' %}selected{% endif %}>Viúvo(a)</option>
+                <option value="União Estável" {% if paciente.estado_civil == 'União Estável' %}selected{% endif %}>União Estável</option>
+                <option value="Separado(a)" {% if paciente.estado_civil == 'Separado(a)' %}selected{% endif %}>Separado(a)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="telefone">Telefone *</label>
+            <input type="tel" id="telefone" name="telefone" value="{{ paciente.telefone }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ paciente.email or '' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="endereco">Endereço</label>
+            <input type="text" id="endereco" name="endereco" value="{{ paciente.endereco or '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="nome_contato_emergencia">Nome do Contato de Emergência</label>
+            <input type="text" id="nome_contato_emergencia" name="nome_contato_emergencia" value="{{ paciente.nome_contato_emergencia or '' }}" placeholder="Nome completo do contato">
+        </div>
+
+        <div class="form-group">
+            <label for="telefone_contato_emergencia">Telefone do Contato de Emergência</label>
+            <input type="tel" id="telefone_contato_emergencia" name="telefone_contato_emergencia" value="{{ paciente.telefone_contato_emergencia or '' }}" placeholder="(00) 00000-0000">
+        </div>
+        
+        <div class="form-group">
+            <label for="historico_medico">Histórico Médico</label>
+            <textarea id="historico_medico" name="historico_medico">{{ paciente.historico_medico or '' }}</textarea>
+        </div>
+        
+        <div class="form-actions">
+            <a href="{{ url_for('pacientes.ver_paciente', id=paciente.id) }}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

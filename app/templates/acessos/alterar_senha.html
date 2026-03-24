@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Alterar Senha - Clínica de Saúde Mental{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .form-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #0066cc;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    .info-box {
+        background: #f0f7ff;
+        border-left: 4px solid #0066cc;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .password-requirements {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #856404;
+    }
+
+    .password-requirements ul {
+        margin: 10px 0 0 20px;
+        padding: 0;
+    }
+
+    .password-requirements li {
+        margin: 5px 0;
+    }
+
+    .user-info {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
+
+    .user-info p {
+        margin: 8px 0;
+        font-size: 14px;
+    }
+
+    .user-info strong {
+        color: #0066cc;
+    }
+
+    .form-group input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+
+    .form-group input[type="password"]:focus {
+        outline: none;
+        border-color: #0066cc;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    .form-group input[type="password"]::placeholder {
+        color: #999;
+    }
+
+    .password-strength {
+        margin-top: 8px;
+        font-size: 12px;
+    }
+
+    .strength-bar {
+        width: 100%;
+        height: 4px;
+        background: #e0e0e0;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 4px;
+    }
+
+    .strength-bar-fill {
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .strength-weak {
+        background: #dc3545;
+    }
+
+    .strength-fair {
+        background: #ffc107;
+    }
+
+    .strength-good {
+        background: #17a2b8;
+    }
+
+    .strength-strong {
+        background: #28a745;
+    }
+
+    @media (max-width: 768px) {
+        .form-section {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>Alterar Senha</h2>
+
+<div class="form-section">
+    <div class="form-section-title">Informações do Usuário</div>
+    
+    <div class="user-info">
+        <p><strong>Nome:</strong> {{ current_user.nome }}</p>
+        <p><strong>Email:</strong> {{ current_user.email }}</p>
+    </div>
+</div>
+
+<div class="form-section">
+    <div class="form-section-title">Alterar Senha</div>
+    
+    <div class="info-box">
+        ℹ️ Por segurança, altere sua senha regularmente. Use uma combinação de letras, números e caracteres especiais.
+    </div>
+
+    <div class="password-requirements">
+        <strong>Requisitos de Senha:</strong>
+        <ul>
+            <li>Mínimo de 6 caracteres</li>
+            <li>Recomendado: Letras maiúsculas e minúsculas</li>
+            <li>Recomendado: Números</li>
+            <li>Recomendado: Caracteres especiais (!@#$%)</li>
+        </ul>
+    </div>
+    
+    <form method="POST">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="senha_atual">Senha Atual *</label>
+                <input type="password" id="senha_atual" name="senha_atual" placeholder="Digite sua senha atual" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="nova_senha">Nova Senha *</label>
+                <input type="password" id="nova_senha" name="nova_senha" placeholder="Digite sua nova senha" required onkeyup="verificarForcaSenha()">
+                <div class="password-strength">
+                    <span id="strength-text">Força da senha: </span>
+                    <div class="strength-bar">
+                        <div id="strength-bar" class="strength-bar-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="confirmar_senha">Confirmar Nova Senha *</label>
+                <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="Confirme sua nova senha" required>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url_for('acessos.listar_acessos') }}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-success">Alterar Senha</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function verificarForcaSenha() {
+        const senha = document.getElementById('nova_senha').value;
+        const strengthBar = document.getElementById('strength-bar');
+        const strengthText = document.getElementById('strength-text');
+        
+        let forca = 0;
+        
+        // Verificar comprimento
+        if (senha.length >= 6) forca += 1;
+        if (senha.length >= 10) forca += 1;
+        
+        // Verificar maiúsculas
+        if (/[A-Z]/.test(senha)) forca += 1;
+        
+        // Verificar minúsculas
+        if (/[a-z]/.test(senha)) forca += 1;
+        
+        // Verificar números
+        if (/[0-9]/.test(senha)) forca += 1;
+        
+        // Verificar caracteres especiais
+        if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha)) forca += 1;
+        
+        // Atualizar barra de força
+        let percentual = (forca / 6) * 100;
+        let classe = '';
+        let texto = '';
+        
+        if (percentual === 0) {
+            classe = '';
+            texto = 'Força da senha: ';
+        } else if (percentual < 40) {
+            classe = 'strength-weak';
+            texto = 'Força da senha: Fraca';
+        } else if (percentual < 60) {
+            classe = 'strength-fair';
+            texto = 'Força da senha: Média';
+        } else if (percentual < 80) {
+            classe = 'strength-good';
+            texto = 'Força da senha: Boa';
+        } else {
+            classe = 'strength-strong';
+            texto = 'Força da senha: Forte';
+        }
+        
+        strengthBar.style.width = percentual + '%';
+        strengthBar.className = 'strength-bar-fill ' + classe;
+        strengthText.textContent = texto;
+    }
+</script>
+{% endblock %}

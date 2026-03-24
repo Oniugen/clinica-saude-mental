@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Agendamento - Clínica de Saúde Mental{% endblock %}
+
+
+
+{% block content %}
+<h2>Agendamento - {{ agendamento.paciente.nome }}</h2>
+
+<div class="card">
+    <div class="card-title">Informações do Agendamento</div>
+    <p><strong>Paciente:</strong> {{ agendamento.paciente.nome }} (CPF: {{ agendamento.paciente.cpf|format_cpf }})</p>
+    <p><strong>Profissional:</strong> {{ agendamento.profissional.nome }} - {{ agendamento.profissional.especialidade }}</p>
+    <p><strong>Consultório / Sala:</strong> {% if agendamento.consultorio_sala %}{{ agendamento.consultorio_sala }}{% else %}-{% endif %}</p>
+    <p><strong>Data e Hora:</strong> {{ agendamento.data_agendamento.strftime('%d/%m/%Y') }} - {% if agendamento.hora_inicio %}{{ agendamento.hora_inicio.strftime('%H:%M') }}{% else %}00:00{% endif %}</p>
+    {% if agendamento.hora_fim %}
+    <p><strong>Hora de Término:</strong> {{ agendamento.hora_fim.strftime('%H:%M') }}</p>
+    {% endif %}
+    <p><strong>Status:</strong> {{ agendamento.status }}</p>
+    <p><strong>Data de Criação:</strong> {{ agendamento.data_criacao.strftime('%d/%m/%Y %H:%M') }}</p>
+    
+    {% if agendamento.observacoes %}
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e0e0e0;">
+    <p><strong>Observações:</strong></p>
+    <p>{{ agendamento.observacoes }}</p>
+    {% endif %}
+    
+    <div class="form-actions">
+        <a href="{{ url_for('agendamentos.editar_agendamento', id=agendamento.id) }}" class="btn btn-primary">Editar</a>
+        <a href="{{ url_for('consultas.nova_consulta', paciente_id=agendamento.paciente_id, profissional_id=agendamento.profissional_id, consultorio_sala=agendamento.consultorio_sala, data_agendamento=agendamento.data_agendamento.strftime('%Y-%m-%d') + 'T' + (agendamento.hora_inicio.strftime('%H:%M') if agendamento.hora_inicio else '00:00')) }}" class="btn btn-success">Registrar Consulta</a>
+        <form method="POST" action="{{ url_for('agendamentos.deletar_agendamento', id=agendamento.id) }}" style="display:inline;">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este agendamento?')">Excluir</button>
+        </form>
+        <a href="{{ url_for('agendamentos.listar_agendamentos') }}" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+{% endblock %}

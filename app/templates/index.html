@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+
+{% block title %}Tela Inicial - Clínica de Saúde Mental{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-welcome {
+        background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        text-align: center;
+    }
+
+    .dashboard-welcome h2 {
+        color: white;
+        margin-bottom: 0;
+        font-size: 28px;
+    }
+
+    .dashboard-welcome p {
+        opacity: 0.95;
+        font-size: 15px;
+        display: none;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .dashboard-card {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        transition: all 0.3s ease;
+        border-top: 5px solid #0066cc;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: rgba(0, 102, 204, 0.05);
+        border-radius: 50%;
+        transform: translate(30%, -30%);
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .dashboard-card:nth-child(2) {
+        border-top-color: #28a745;
+    }
+
+    .dashboard-card:nth-child(2) .number {
+        color: #28a745;
+    }
+
+    .dashboard-card:nth-child(3) {
+        border-top-color: #ffc107;
+    }
+
+    .dashboard-card:nth-child(3) .number {
+        color: #ffc107;
+    }
+
+    .dashboard-card:nth-child(4) {
+        border-top-color: #17a2b8;
+    }
+
+    .dashboard-card:nth-child(4) .number {
+        color: #17a2b8;
+    }
+
+    .dashboard-card h3 {
+        color: #666;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .dashboard-card .number {
+        font-size: 48px;
+        font-weight: 700;
+        color: #0066cc;
+        margin: 10px 0;
+    }
+
+    .dashboard-card .subtitle {
+        font-size: 12px;
+        color: #999;
+        margin-top: 8px;
+    }
+
+    .actions-section {
+        margin-bottom: 30px;
+    }
+
+    .actions-section .card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .action-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        min-height: 120px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 102, 204, 0.4);
+    }
+
+    .action-btn .icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .action-btn.secondary {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+    .action-btn.secondary:hover {
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .action-btn.tertiary {
+        background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
+    }
+
+    .action-btn.tertiary:hover {
+        box-shadow: 0 8px 20px rgba(23, 162, 184, 0.4);
+    }
+
+    .action-btn.quaternary {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    }
+
+    .action-btn.quaternary:hover {
+        box-shadow: 0 8px 20px rgba(255, 193, 7, 0.4);
+    }
+
+    .info-section {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .info-section h3 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 18px;
+        font-weight: 600;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #0066cc;
+    }
+
+    .info-section ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+
+
+    .info-section li {
+        padding: 12px 0;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .info-section li:last-child {
+        border-bottom: none;
+    }
+
+    .info-section strong {
+        color: #0066cc;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .actions-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .dashboard-welcome h2 {
+            font-size: 22px;
+        }
+
+        .dashboard-card .number {
+            font-size: 36px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .actions-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-btn {
+            min-height: 100px;
+        }
+
+        .action-btn .icon {
+            font-size: 24px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-welcome">
+    <h2>Bem-vindo(a) de volta, {{ current_user.nome }}!</h2>
+    <p>Gerencie pacientes, profissionais, consultas e agendamentos de forma eficiente e organizada</p>
+</div>
+
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        <h3>Pacientes</h3>
+        <div class="number">{{ total_pacientes }}</div>
+        <div class="subtitle">Cadastrados no sistema</div>
+    </div>
+    
+    <div class="dashboard-card">
+        <h3>Profissionais</h3>
+        <div class="number">{{ total_profissionais }}</div>
+        <div class="subtitle">Ativos na clínica</div>
+    </div>
+    
+    <div class="dashboard-card">
+        <h3>Consultas</h3>
+        <div class="number">{{ total_consultas }}</div>
+        <div class="subtitle">Realizadas</div>
+    </div>
+    
+    <div class="dashboard-card">
+        <h3>Agendamentos</h3>
+        <div class="number">{{ agendamentos_proximos }}</div>
+        <div class="subtitle">Próximos agendamentos</div>
+    </div>
+</div>
+
+<div class="actions-section card">
+    <div class="card-title">
+        <span>⚡ Ações Rápidas</span>
+    </div>
+    <div class="actions-grid">
+        <a href="{{ url_for('pacientes.novo_paciente') }}" class="action-btn">
+            <div class="icon">👤</div>
+            <div>Novo Paciente</div>
+        </a>
+        <a href="{{ url_for('profissionais.novo_profissional') }}" class="action-btn secondary">
+            <div class="icon">👨‍⚕️</div>
+            <div>Novo Profissional</div>
+        </a>
+        <a href="{{ url_for('consultas.nova_consulta') }}" class="action-btn tertiary">
+            <div class="icon">📋</div>
+            <div>Nova Consulta</div>
+        </a>
+        <a href="{{ url_for('agendamentos.novo_agendamento') }}" class="action-btn quaternary">
+            <div class="icon">📅</div>
+            <div>Novo Agendamento</div>
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <style>
+        .card-header-with-picker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #0066cc;
+        }
+        
+        .card-header-with-picker .card-title {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+        
+        .date-picker-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .date-picker-wrapper label {
+            font-weight: 600;
+            color: #666;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        .date-picker-wrapper input[type="date"] {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 140px;
+        }
+        
+        .date-picker-wrapper input[type="date"]:hover {
+            border-color: #0066cc;
+            background: #f8fbff;
+        }
+        
+        .date-picker-wrapper input[type="date"]:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        
+        .no-agendamentos {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+    </style>
+    
+    <div class="card-header-with-picker">
+        <div class="card-title">Agendamentos</div>
+        <div class="date-picker-wrapper">
+            <label for="dataPicker">Data:</label>
+            <input type="date" id="dataPicker" value="{{ data_selecionada }}" onchange="filtrarAgendamentos()">
+        </div>
+    </div>
+    
+    {% if agendamentos_dia %}
+    <table>
+        <thead>
+            <tr>
+                <th>Horário</th>
+                <th>Paciente</th>
+                <th>Profissional</th>
+                <th>Consultório</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agendamento in agendamentos_dia %}
+            <tr>
+                <td><strong>{% if agendamento.hora_inicio %}{{ agendamento.hora_inicio.strftime('%H:%M') }}{% else %}-{% endif %}</strong></td>
+                <td>{{ agendamento.paciente.nome }}</td>
+                <td>{{ agendamento.profissional.nome }}</td>
+                <td>{% if agendamento.consultorio_sala %}{{ agendamento.consultorio_sala }}{% else %}-{% endif %}</td>
+                <td>
+                    {% if agendamento.status == 'Agendado' %}
+                        <span style="background: #cfe2ff; color: #084298; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">{{ agendamento.status }}</span>
+                    {% elif agendamento.status == 'Realizado' %}
+                        <span style="background: #d1e7dd; color: #0f5132; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">{{ agendamento.status }}</span>
+                    {% elif agendamento.status == 'Reagendado' %}
+                        <span style="background: #fff3cd; color: #664d03; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">{{ agendamento.status }}</span>
+                    {% else %}
+                        <span style="background: #f8d7da; color: #842029; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">{{ agendamento.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('consultas.nova_consulta', paciente_id=agendamento.paciente_id, profissional_id=agendamento.profissional_id, consultorio_sala=agendamento.consultorio_sala, data_agendamento=agendamento.data_agendamento.strftime('%Y-%m-%d') + 'T' + (agendamento.hora_inicio.strftime('%H:%M') if agendamento.hora_inicio else '00:00')) }}" class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">Consulta</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="no-agendamentos">
+        <p>Ainda não há agendamentos para este dia.</p>
+    </div>
+    {% endif %}
+    
+    <script>
+        function filtrarAgendamentos() {
+            const dataPicker = document.getElementById('dataPicker');
+            const dataSelecionada = dataPicker.value;
+            window.location.href = '/?data=' + dataSelecionada;
+        }
+        
+        // Formatar a exibição da data para DD/MM/YYYY
+        document.addEventListener('DOMContentLoaded', function() {
+            const dataPicker = document.getElementById('dataPicker');
+            
+            function formatarDataDisplay() {
+                if (dataPicker.value) {
+                    const [ano, mes, dia] = dataPicker.value.split('-');
+                    dataPicker.setAttribute('data-display', `${dia}/${mes}/${ano}`);
+                }
+            }
+            
+            formatarDataDisplay();
+            dataPicker.addEventListener('change', formatarDataDisplay);
+        });
+    </script>
+</div>
+
+<div class="info-section">
+    <h3>Sobre o Sistema</h3>
+    <ul>
+        <li><strong>Cadastro de Pacientes:</strong> Registre informações completas dos pacientes, incluindo histórico médico e dados de contato.</li>
+        <li><strong>Cadastro de Profissionais:</strong> Mantenha dados dos médicos, psicólogos, terapeutas e outros profissionais da clínica com suas especialidades.</li>
+        <li><strong>Registro de Consultas:</strong> Documente cada consulta realizada com diagnóstico, prescrição e observações importantes.</li>
+        <li><strong>Agendamentos:</strong> Organize os horários de atendimento de forma eficiente, vinculando pacientes aos profissionais e consultórios.</li>
+        <li><strong>Gerenciamento de Acessos:</strong> Controle quem tem acesso ao sistema, vinculando usuários aos profissionais cadastrados.</li>
+    </ul>
+</div>
+{% endblock %}

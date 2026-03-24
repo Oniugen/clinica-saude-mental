@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profissional.nome }} - Clínica de Saúde Mental{% endblock %}
+
+{% block content %}
+<h2>{{ profissional.nome }}</h2>
+
+<div class="card">
+    <div class="card-title">Informações Profissionais</div>
+    <p><strong>CPF:</strong> {{ profissional.cpf|format_cpf }}</p>
+    <p><strong>Especialidade:</strong> {{ profissional.especialidade }}</p>
+    {% if profissional.especialidade_customizada %}
+    <p><strong>Especialidade Customizada:</strong> {{ profissional.especialidade_customizada }}</p>
+    {% endif %}
+    <p><strong>Estado Civil:</strong> {{ profissional.estado_civil or '-' }}</p>
+    <p><strong>Telefone:</strong> {{ profissional.telefone }}</p>
+    <p><strong>Email:</strong> {{ profissional.email or '-' }}</p>
+    <p><strong>Número de Registro:</strong> {{ profissional.numero_registro or '-' }}</p>
+    <p><strong>Endereço:</strong> {{ profissional.endereco or '-' }}</p>
+    <p><strong>Data de Cadastro:</strong> {{ profissional.data_cadastro.strftime('%d/%m/%Y %H:%M') }}</p>
+
+    {% if profissional.nome_contato_emergencia or profissional.telefone_contato_emergencia %}
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e0e0e0;">
+    <p><strong>Contato de Emergência:</strong> {{ profissional.nome_contato_emergencia or '-' }}</p>
+    <p><strong>Telefone de Emergência:</strong> {{ profissional.telefone_contato_emergencia or '-' }}</p>
+    {% endif %}
+    
+    <div class="form-actions">
+        <a href="{{ url_for('profissionais.editar_profissional', id=profissional.id) }}" class="btn btn-primary">Editar</a>
+        <form method="POST" action="{{ url_for('profissionais.deletar_profissional', id=profissional.id) }}" style="display:inline;">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja deletar este profissional?')">Deletar</button>
+        </form>
+        <a href="{{ url_for('profissionais.listar_profissionais') }}" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+
+{% if consultas %}
+<div class="card">
+    <div class="card-title">Consultas Realizadas</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Paciente</th>
+                <th>Diagnóstico</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for consulta in consultas %}
+            <tr>
+                <td>{{ consulta.data_consulta.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ consulta.paciente.nome }}</td>
+                <td>{{ consulta.diagnostico[:50] or '-' }}</td>
+                <td>
+                    <a href="{{ url_for('consultas.ver_consulta', id=consulta.id) }}" class="btn btn-secondary">Ver</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if agendamentos %}
+<div class="card">
+    <div class="card-title">Agendamentos</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Paciente</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agendamento in agendamentos %}
+            <tr>
+                <td>{{ agendamento.data_agendamento.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ agendamento.paciente.nome }}</td>
+                <td>{{ agendamento.status }}</td>
+                <td>
+                    <a href="{{ url_for('agendamentos.ver_agendamento', id=agendamento.id) }}" class="btn btn-secondary">Ver</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

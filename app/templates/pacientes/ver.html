@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}{{ paciente.nome }} - Clínica de Saúde Mental{% endblock %}
+
+{% block content %}
+<h2>{{ paciente.nome }}</h2>
+
+<div class="card">
+    <div class="card-title">Informações Pessoais</div>
+    <p><strong>CPF:</strong> {{ paciente.cpf|format_cpf }}</p>
+    <p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento.strftime('%d/%m/%Y') }}</p>
+    <p><strong>Estado Civil:</strong> {{ paciente.estado_civil or '-' }}</p>
+    <p><strong>Telefone:</strong> {{ paciente.telefone }}</p>
+    <p><strong>Email:</strong> {{ paciente.email or '-' }}</p>
+    <p><strong>Endereço:</strong> {{ paciente.endereco or '-' }}</p>
+    <p><strong>Data de Cadastro:</strong> {{ paciente.data_cadastro.strftime('%d/%m/%Y %H:%M') }}</p>
+
+    {% if paciente.nome_contato_emergencia or paciente.telefone_contato_emergencia %}
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e0e0e0;">
+    <p><strong>Contato de Emergência:</strong> {{ paciente.nome_contato_emergencia or '-' }}</p>
+    <p><strong>Telefone de Emergência:</strong> {{ paciente.telefone_contato_emergencia or '-' }}</p>
+    {% endif %}
+    
+    {% if paciente.historico_medico %}
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e0e0e0;">
+    <p><strong>Histórico Médico:</strong></p>
+    <p>{{ paciente.historico_medico }}</p>
+    {% endif %}
+    
+    <div class="form-actions">
+        <a href="{{ url_for('pacientes.editar_paciente', id=paciente.id) }}" class="btn btn-primary">Editar</a>
+        <form method="POST" action="{{ url_for('pacientes.deletar_paciente', id=paciente.id) }}" style="display:inline;">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja deletar este paciente?')">Deletar</button>
+        </form>
+        <a href="{{ url_for('pacientes.listar_pacientes') }}" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+
+{% if consultas %}
+<div class="card">
+    <div class="card-title">Consultas Registradas</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Profissional</th>
+                <th>Diagnóstico</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for consulta in consultas %}
+            <tr>
+                <td>{{ consulta.data_consulta.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ consulta.profissional.nome }}</td>
+                <td>{{ consulta.diagnostico[:50] or '-' }}</td>
+                <td>
+                    <a href="{{ url_for('consultas.ver_consulta', id=consulta.id) }}" class="btn btn-secondary">Ver</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if agendamentos %}
+<div class="card">
+    <div class="card-title">Agendamentos</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Profissional</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agendamento in agendamentos %}
+            <tr>
+                <td>{{ agendamento.data_agendamento.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ agendamento.profissional.nome }}</td>
+                <td>{{ agendamento.status }}</td>
+                <td>
+                    <a href="{{ url_for('agendamentos.ver_agendamento', id=agendamento.id) }}" class="btn btn-secondary">Ver</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
