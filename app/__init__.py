@@ -11,7 +11,7 @@ def create_app():
     app = Flask(__name__)
 
     # Chave secreta
-    app.config['SECRET_KEY'] = 'clinica-secreta'
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-apenas-local')
 
     # Configuração do banco
     basedir = os.path.abspath(os.path.dirname(__file__))
