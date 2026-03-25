@@ -19,11 +19,6 @@ acessos_bp = Blueprint('acessos', __name__, url_prefix='/acessos')
 
 # ==================== AUTENTICACAO ====================
 
-@login_manager.user_loader
-def load_user(user_id):
-    return Usuario.query.get(int(user_id))
-
-
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
